@@ -1,17 +1,14 @@
-import java.io.FileNotFoundException;
+import db_components.*;
+
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.*;
 
 public class DBApp {
+    public static final int MAX_ROWS_COUNT_IN_PAGE;
+    public static final int MAX_ENTRIES_IN_OCTREE_NODE;
 
-    public DBApp() {
-        init();
-    }
-    public void init() {
-        // create a reader object on the properties file
+    static { // static initializer for constants
         Properties properties;
         try (FileReader fileReader = new FileReader("resources/DBApp.config")) {
             properties = new Properties();
@@ -20,8 +17,18 @@ public class DBApp {
             throw new RuntimeException(e);
         }
 
-        int maxRowsInPage = Integer.parseInt(properties.getProperty("MaximumRowsCountInTablePage"));
-        int maxEntriesInOctreeNode = Integer.parseInt(properties.getProperty("MaximumEntriesInOctreeNode"));
+        MAX_ROWS_COUNT_IN_PAGE = Integer.parseInt(properties.getProperty("MaximumRowsCountInTablePage"));
+        MAX_ENTRIES_IN_OCTREE_NODE = Integer.parseInt(properties.getProperty("MaximumEntriesInOctreeNode"));
+    }
+
+    public Vector<Table> tables;
+
+    public DBApp() {
+        tables = new Vector<>();
+    }
+
+    public void init() {
+
     }
 
     public void createTable(String strTableName,
@@ -29,21 +36,29 @@ public class DBApp {
                             Hashtable<String, String> htblColNameType,
                             Hashtable<String, String> htblColNameMin,
                             Hashtable<String, String> htblColNameMax) throws DBAppException {
+        Vector<Column> tableColumns = new Vector<>();
+        htblColNameType.forEach((colName, colType) ->
+            tableColumns.add(new Column(colName, colType, htblColNameMin.get(colName), htblColNameMax.get(colName), Objects.equals(colName, strClusteringKeyColumn)))
+        );
+        tables.add(new Table(tableColumns));
+    }
+
+    public void createIndex(String strTableName, String[] strarrColName) throws DBAppException {
 
     }
 
-    public void createIndex(String strTableName, String[] strarrColName) throws DBAppException{
-
-    }
     public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException {
 
     }
+
     public void updateTable(String strTableName, String strClusteringKeyValue, Hashtable<String,Object> htblColNameValue ) throws DBAppException {
 
     }
+
     public void deleteFromTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException {
 
     }
+
     public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException {
         return null;
     }
