@@ -1,27 +1,11 @@
-import db_components.*;
+package engine;
 
-import java.io.FileReader;
-import java.io.IOException;
+import engine.table.*;
+
 import java.util.*;
 
 public class DBApp {
-    public static final int MAX_ROWS_COUNT_IN_PAGE;
-    public static final int MAX_ENTRIES_IN_OCTREE_NODE;
-
-    static { // static initializer for constants
-        Properties properties;
-        try (FileReader fileReader = new FileReader("resources/DBApp.config")) {
-            properties = new Properties();
-            properties.load(fileReader);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        MAX_ROWS_COUNT_IN_PAGE = Integer.parseInt(properties.getProperty("MaximumRowsCountInTablePage"));
-        MAX_ENTRIES_IN_OCTREE_NODE = Integer.parseInt(properties.getProperty("MaximumEntriesInOctreeNode"));
-    }
-
-    public Vector<Table> tables;
+    public final Vector<Table> tables;
 
     public DBApp() {
         tables = new Vector<>();
@@ -40,7 +24,7 @@ public class DBApp {
         htblColNameType.forEach((colName, colType) ->
             tableColumns.add(new Column(colName, colType, htblColNameMin.get(colName), htblColNameMax.get(colName), Objects.equals(colName, strClusteringKeyColumn)))
         );
-        tables.add(new Table(tableColumns));
+        tables.add(new Table(strTableName, tableColumns));
     }
 
     public void createIndex(String strTableName, String[] strarrColName) throws DBAppException {

@@ -1,4 +1,4 @@
-package db_components;
+package engine.table;
 
 import java.io.Serializable;
 
