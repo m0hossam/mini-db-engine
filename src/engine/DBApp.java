@@ -1,5 +1,6 @@
 package engine;
 
+import engine.exceptions.DBAppException;
 import engine.table.*;
 
 import java.util.*;
@@ -32,7 +33,12 @@ public class DBApp {
     }
 
     public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException {
-
+        for (Table table : tables) {
+            if (Objects.equals(table.name, strTableName)) {
+                table.insertRow(htblColNameValue);
+                break;
+            }
+        }
     }
 
     public void updateTable(String strTableName, String strClusteringKeyValue, Hashtable<String,Object> htblColNameValue ) throws DBAppException {

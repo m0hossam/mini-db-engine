@@ -1,4 +1,4 @@
-package engine;
+package engine.octree;
 
 public class Octree {
 }
